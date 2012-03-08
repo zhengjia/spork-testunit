@@ -49,6 +49,7 @@ class Spork::TestFramework::TestUnit < Spork::TestFramework
         config = Turn.config do |c|
           c.tests     = argv
           c.framework = :minitest
+          c.loadpath << 'test' unless c.loadpath.include?('test')
         end
         controller = Turn::Controller.new(config)
         controller.start
