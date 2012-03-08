@@ -7,7 +7,7 @@ class Spork::TestFramework::TestUnit < Spork::TestFramework
       # Ruby 1.9
       stdout = Purdytest::IO.new(stdout) if defined? Purdytest # rewrap
       MiniTest::Unit.output = stdout
-
+      old_load_path = $LOAD_PATH.dup
       # MiniTest's test/unit does not support -I, -r, or -e
       # Extract them and remove from arguments that are passed to testrb.
       argv.each_with_index do |arg, idx|
@@ -49,7 +49,7 @@ class Spork::TestFramework::TestUnit < Spork::TestFramework
         config = Turn.config do |c|
           c.tests     = argv
           c.framework = :minitest
-          c.loadpath << 'test' unless c.loadpath.include?('test')
+          c.loadpath = (c.loadpath + $LOAD_PATH - old_load_path).uniq
         end
         controller = Turn::Controller.new(config)
         controller.start
